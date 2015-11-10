@@ -1,5 +1,9 @@
 # cube-fight
 
-you'll need to clone a submodule for the rubiks cube code
+To run, go to the command line and type:
 
-> git submodule add git@github.com:donnietron/html5rubik.git client
+`meteor`
+
+If you have not already set up meter, see: 
+
+[https://www.meteor.com/](https://www.meteor.com/)
