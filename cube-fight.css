@@ -1,0 +1,18 @@
+body {
+	padding-left: 50px;
+
+}
+#container {
+	position: relative;
+	height: 750px;
+}
+
+#moves {
+	position: absolute;
+	bottom: 0;
+}
+
+#moves button {
+	height: 50px;
+	width: 50px;
+}
