@@ -1,4 +1,4 @@
-Moves = new Mongo.Collection("moves");
+Cubes = new Mongo.Collection("cubes");
 
 function getMovesList(){
   return ["LM",
@@ -11,11 +11,8 @@ function getMovesList(){
           "CE",
           "DE"];
 }
-function getMove(index){
-  return getMovesList()[index];
-}
 function getMoves(){
-  return Moves.find({}, {sort:{createdAt: -1}}).fetch();
+  return Cubes.findOne({_id:Session.get("cubeId")}, {sort:{createdAt: -1}}).moves || [];
 }
 function parseMove(move, left){
   move = move.split('');
@@ -24,10 +21,6 @@ function parseMove(move, left){
 
 if (Meteor.isClient) {
   Template.moves.helpers({
-    move: function () {
-      var moves = getMoves();
-      return moves.length ? getMove(moves[0].move) : " - ";
-    },
     movesList: function () {
       return getMovesList();
     }
@@ -36,51 +29,31 @@ if (Meteor.isClient) {
   Template.moves.events({
     'click [idx]': function (event) {
       event.preventDefault();
-      Moves.insert({
-        move: event.target.attributes['idx'].value,
-        createdAt: new Date() // current time 
-      });      
+      Cubes.update({_id:Session.get("cubeId")}, {$push: { moves: event.target.attributes['idx'].value }}, {upsert:true});      
     },
     'click .reset': function (event){
       event.preventDefault();
       getMoves().map(function(move){
-        Moves.remove({_id:move._id}); 
+        Cubes.update( {_id:Session.get("cubeId")}, {$push: { moves: [] }}, {upsert:true});  
       });
     }
   });
  
-  Moves.find().observeChanges({
-    added: function(){
-      if(!window.cube || !window.cube._cube) return;
-      var moves = getMoves();
-      var move = getMove(moves[0].move);
-      //console.log("Moves: "+moves.map(function(move){ return "["+getMove(move.move)+":"+move.createdAt.toLocaleTimeString()+"]";}));
-      //console.log("Move: "+move);
-      if(move && move!== 'on'){
-          window.cube._expectingTransition = true;
-          window.cube._doMovement(parseMove(move));
-      }
-    },
-    removed: function(){
-      if(!window.cube || !window.cube._cube) return;
-      if(Moves.find().count() === 0) {
-        window.cube._solveFake();
-      }
-    }
-  });
-
-  Meteor.startup(function () {
+  Cubes.find().observeChanges({
+    added: function() {
+      var cubeId = Cubes.findOne()._id;
+      
+      Session.set("cubeId", cubeId); 
       initCube();
 
       YUI().use('node', 'rubik', 'rubik-queue', function(Y){
           var queue = null;
-          if(Moves.find().count() > 0) {
+          if(Cubes.find().count() > 0) {
               queue = new Y.Queue();
               for(move of getMoves()){
-                queue.add(parseMove(getMove(move.move), true));
+                queue.add(parseMove(move, true));
               }
               queue.current = -1;
-              queue._queue.reverse();
           }
 
           var cube = window.cube = (queue ? new Y.Rubik({queue:queue}) : new Y.Rubik());
@@ -93,11 +66,31 @@ if (Meteor.isClient) {
               clearInterval(intervalId);
           }, 500);
       });
+    },
+    changed: function(){
+      if(!window.cube || !window.cube._cube) return;
+      var moves = getMoves();
+      var move = moves[moves.length-1];
+      console.log("Move: "+move);
+      if(move && move!== 'on') {
+          window.cube._expectingTransition = true;
+          window.cube._doMovement(parseMove(move));
+      }
+    },
+    removed: function(){
+      if(!window.cube || !window.cube._cube) return;
+      if(Cubes.find().count() === 0) {
+        window.cube._solveFake();
+      }
+    }
   });
 }
 
 if(Meteor.isServer) {
   Meteor.startup(function () {
-    Moves.remove({}); 
+    Cubes.remove({});
+    Cubes.insert({
+      createdAt: new Date()
+    });
   });
 }
