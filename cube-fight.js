@@ -27,10 +27,11 @@ if (Meteor.isClient) {
   });
 
   Template.moves.events({
-    'click [idx]': function (event) {
+    'click [idx]': _.debounce(function (event) {
       event.preventDefault();
+      //console.log("pushing "+event.target.attributes['idx'].value+" into the queue");
       Cubes.update({_id:Session.get("cubeId")}, {$push: { moves: event.target.attributes['idx'].value }}, {upsert:true});      
-    },
+    }, 500),
     'click .reset': function (event){
       event.preventDefault();
       getMoves().map(function(move){
