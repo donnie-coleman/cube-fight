@@ -20,8 +20,8 @@ function getMoves(){
 function parseMove(move, left){
   move = move.split('');
   return {face: move[0], slice: move[1], rotate: (left ? 'left' : 'right')};
-
 }
+
 if (Meteor.isClient) {
   Template.moves.helpers({
     move: function () {
@@ -70,10 +70,9 @@ if (Meteor.isClient) {
   });
 
   Meteor.startup(function () {
-    $.getScript('http://yui.yahooapis.com/3.5.1/build/yui/yui-min.js', function(){
       initCube();
 
-      YUI().use('node','rubik', 'rubik-queue', function(Y){
+      YUI().use('node', 'rubik', 'rubik-queue', function(Y){
           var queue = null;
           if(Moves.find().count() > 0) {
               queue = new Y.Queue();
@@ -94,7 +93,6 @@ if (Meteor.isClient) {
               clearInterval(intervalId);
           }, 500);
       });
-    });
   });
 }
 
