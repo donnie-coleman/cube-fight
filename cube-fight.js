@@ -34,7 +34,7 @@ if (Meteor.isClient) {
     'click .reset': function (event){
       event.preventDefault();
       getMoves().map(function(move){
-        Cubes.update( {_id:Session.get("cubeId")}, {$push: { moves: [] }}, {upsert:true});  
+        Cubes.update( {_id:Session.get("cubeId")}, {$set: { moves: [] }}, {upsert:true});
       });
     }
   });
@@ -70,17 +70,16 @@ if (Meteor.isClient) {
     changed: function(){
       if(!window.cube || !window.cube._cube) return;
       var moves = getMoves();
-      var move = moves[moves.length-1];
-      console.log("Move: "+move);
-      if(move && move!== 'on') {
-          window.cube._expectingTransition = true;
-          window.cube._doMovement(parseMove(move));
-      }
-    },
-    removed: function(){
-      if(!window.cube || !window.cube._cube) return;
-      if(Cubes.find().count() === 0) {
+      if(!moves.length) {
         window.cube._solveFake();
+      }
+      else {
+        var move = moves[moves.length-1];
+        console.log("Move: "+move);
+        if(move && move!== 'on') {
+            window.cube._expectingTransition = true;
+            window.cube._doMovement(parseMove(move));
+        }
       }
     }
   });
