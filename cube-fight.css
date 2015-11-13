@@ -1,10 +1,18 @@
 body {
 	padding-left: 50px;
-
 }
+
+h1 {
+	font-family: sans-serif;
+}
+
 #container {
 	position: relative;
-	height: 750px;
+	height: 650px;
+}
+
+#cube-container {
+	cursor: default;
 }
 
 #moves {
@@ -12,7 +20,8 @@ body {
 	bottom: 0;
 }
 
-#moves button {
-	height: 50px;
-	width: 50px;
+#moves img {
+	height: 100px;
+	width:  100px;
+	cursor: pointer;
 }

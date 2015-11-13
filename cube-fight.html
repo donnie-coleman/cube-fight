@@ -7,16 +7,18 @@
   <div id="container">	  
   		{{> cube}}
   	  	{{> moves}}	
-  </div>	
+  </div>
+
+  <footer><a target="_blank" href="https://github.com/donnietron/cube-fight">To Github</a></footer>	
 </body>
 
 <template name="moves">
 	<section id="moves">
 		<div>
-			<button class="reset">Reset</button>
+			<img title="Solve" src="images/RESET.jpg" class="reset"/>
 			<!-- <button class="redo">Redo</button> -->
 			{{#each m in movesList}}
-			<button idx="{{m}}">{{m}}</button>
+			<img title="Twist {{m}} Slice Right" src="images/{{m}}.jpg" idx="{{m}}"/>
 		  	{{/each}}
 		  	<!-- <p>You've pressed the move #{{move}} button.</p> -->
 		</div>
