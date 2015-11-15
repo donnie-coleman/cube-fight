@@ -11,34 +11,46 @@ function getMovesList(){
           "CE",
           "DE"];
 }
+function getDirectionsList(){
+  return ['L','R'];
+}
 function getMoves(){
   return Cubes.findOne({_id:Session.get("cubeId")}, {sort:{createdAt: -1}}).moves || [];
 }
-function parseMove(move, left){
+function parseMove(move, undo){
   move = move.split('');
-  return {face: move[0], slice: move[1], rotate: (left ? 'left' : 'right')};
+  var rot = (move[2] == "R" ? true : false);
+  return {face: move[0], slice: move[1], rotate: (XOR(rot, undo) ? 'right' : 'left')};
+}
+function XOR(a, b){
+  return (a || b) && !(a && b);
 }
 
 if (Meteor.isClient) {
   Template.moves.helpers({
     movesList: function () {
       return getMovesList();
+    },
+    directionsList: function () {
+      return getDirectionsList();
     }
   });
 
   Template.moves.events({
     'click [idx]': _.debounce(function (event) {
       event.preventDefault();
-      //console.log("pushing "+event.target.attributes['idx'].value+" into the queue");
       Cubes.update({_id:Session.get("cubeId")}, {$push: { moves: event.target.attributes['idx'].value }}, {upsert:true});      
-    }, 500),
+    }, 500)
+  });
+
+  Template.controls.events({
     'click .reset': function (event){
       event.preventDefault();
       getMoves().map(function(move){
         Cubes.update( {_id:Session.get("cubeId")}, {$set: { moves: [] }}, {upsert:true});
       });
     }
-  });
+  })
  
   Cubes.find().observeChanges({
     added: function() {
@@ -61,11 +73,7 @@ if (Meteor.isClient) {
           // cube._disabledFLick = true;
           cube.run();
 
-          var intervalId = setInterval(function(){
-            cube._expectingTransition = true;
-            if(!cube._redoMove())
-              clearInterval(intervalId);
-          }, 500);
+          invokeSequence(cube, queue);
       });
     },
     changed: function(){
@@ -84,6 +92,14 @@ if (Meteor.isClient) {
       }
     }
   });
+
+  var invokeSequence = function(cube, queue) {
+    var intervalId = setInterval(function(){
+      cube._expectingTransition = true;
+      if(!cube._redoMove())
+        clearInterval(intervalId);
+      }, 500);
+  }
 }
 
 if(Meteor.isServer) {

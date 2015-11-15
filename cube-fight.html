@@ -6,6 +6,7 @@
   <h1>Welcome to Fight Cube!</h1>
   <div id="container">	  
   		{{> cube}}
+  		{{> controls}}
   	  	{{> moves}}	
   </div>
 
@@ -14,13 +15,20 @@
 
 <template name="moves">
 	<section id="moves">
-		<div>
-			<img title="Solve" src="images/RESET.jpg" class="reset"/>
-			<!-- <button class="redo">Redo</button> -->
+		{{#each d in directionsList}}
+		<div class="row">
 			{{#each m in movesList}}
-			<img title="Twist {{m}} Slice Right" src="images/{{m}}.jpg" idx="{{m}}"/>
+			<img title="Twist {{m}} Slice Right" src="images/{{m}}.jpg" idx="{{m}}{{d}}"/>
 		  	{{/each}}
-		  	<!-- <p>You've pressed the move #{{move}} button.</p> -->
+		</div>		
+	  	{{/each}}
+	</section>
+</template>
+
+<template name="controls">
+	<section id="controls">
+		<div class="row">
+			<img title="Solve" src="images/RESET.jpg" class="reset"/>
 		</div>
 	</section>
 </template>
