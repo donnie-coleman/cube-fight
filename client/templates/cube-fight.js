@@ -49,8 +49,10 @@ Template.controls.events({
   }
 });
 
-Cubes.find().observeChanges({
+var handle = Cubes.find().observeChanges({
   added: function(){
+    if(!Session.get('cubeId')) return;
+    initCube();
     YUI().use('node', 'rubik', 'rubik-queue', function(Y){
       var queue = null;
       if(Cubes.find().count() > 0) {
@@ -69,7 +71,7 @@ Cubes.find().observeChanges({
     });
   },
   changed: function(){
-    if(!window.cube || !window.cube._cube) return;
+    if(!Session.get('cubeId') || !window.cube || !window.cube._cube) return;
     var moves = getMoves();
     if(!moves.length) {
       window.cube._solveFake();
@@ -105,7 +107,6 @@ Template.room.helpers({
 
 Template.room.onDestroyed(function(){
   console.log("destroying old cube session");
-  //undo lots of stuff
   Session.set('cubeId', null);
 });
 
