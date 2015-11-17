@@ -2,7 +2,7 @@ body {
 	padding-left: 50px;
 }
 
-h1 {
+h1, h2 {
 	font-family: sans-serif;
 }
 
@@ -34,4 +34,8 @@ img {
 	height: 100px;
 	width:  100px;
 	cursor: pointer;
+}
+
+footer {
+	margin-top: 150px;
 }

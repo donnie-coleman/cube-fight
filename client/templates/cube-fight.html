@@ -1,24 +1,45 @@
 <head>
-  <title>cube-fight</title>
+  <title>Cube Fight!</title>
 </head>
 
-<body>
+<template name="main">
   <h1>Welcome to Fight Cube!</h1>
-  <div id="container">	  
-  		{{> cube}}
-  		{{> controls}}
-  	  	{{> moves}}	
-  </div>
+
+  <main>
+    {{> Template.dynamic template=content }}
+  </main>
 
   <footer><a target="_blank" href="https://github.com/donnietron/cube-fight">To Github</a></footer>	
-</body>
+</template>
+
+<template name="cubeList">
+	<h2>Please choose a cube</h2>
+	{{#if Template.subscriptionsReady}}
+		{{#each cube in cubes}}
+		<div>
+			<a href="/cube/{{cube._id}}"><img src="images/RESET.jpg" />{{cube.name}}</a>
+		</div>
+		{{/each}}
+	{{else}}
+		<div>Loading...</div>
+	{{/if}}
+</template>
+
+<template name="room">
+  <div id="container">
+	{{ cubex.name}}
+	{{> cube}}
+	{{> controls}}
+	{{> moves}}
+  </div>
+</template>
 
 <template name="moves">
 	<section id="moves">
 		{{#each d in directionsList}}
 		<div class="row">
 			{{#each m in movesList}}
-			<img title="Twist {{m}} Slice Right" src="images/{{m}}.jpg" idx="{{m}}{{d}}"/>
+			<img title="Twist {{m}} Slice Right" src="/images/{{m}}.jpg" idx="{{m}}{{d}}"/>
 		  	{{/each}}
 		</div>		
 	  	{{/each}}
@@ -28,7 +49,7 @@
 <template name="controls">
 	<section id="controls">
 		<div class="row">
-			<img title="Solve" src="images/RESET.jpg" class="reset"/>
+			<img title="Solve" src="/images/RESET.jpg" class="reset"/>
 		</div>
 	</section>
 </template>
@@ -38,6 +59,7 @@
 		<div id="cube-container">
 		    <div id="cube-viewport">
 		        <div id="cube">
+{{#if Template.subscriptionsReady}}
 		        <!-- UP FACE -->            
 		            <!-- LEFT COLUMN (L)  -->                
 		            <div class="utl cubie up LM UE BS"><div><span>U1</span></div></div> 
@@ -127,7 +149,7 @@
 		            <div class="rcr cubie right RM CE BS"><div><span>R8</span></div></div>
 		            <div class="rbr cubie right RM DE BS"><div><span>R9</span></div></div>
 		        <!--END LEFT FACE -->  
-		              
+{{/if}}
 		         </div>
 		    </div>
 		</div>  
