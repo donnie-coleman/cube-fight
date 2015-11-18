@@ -20,6 +20,9 @@
 			<a href="/cube/{{cube._id}}"><img src="images/RESET.jpg" />{{cube.name}}</a>
 		</div>
 		{{/each}}
+		<div class="new-room">
+			<input placeholder="Name" /><button>Add New Room</button>
+		</div>
 	{{else}}
 		<div>Loading...</div>
 	{{/if}}
@@ -50,6 +53,9 @@
 	<section id="controls">
 		<div class="row">
 			<img title="Solve" src="/images/RESET.jpg" class="reset"/>
+		</div>
+		<div class="row">
+			<a href="/">HOME</a>
 		</div>
 	</section>
 </template>

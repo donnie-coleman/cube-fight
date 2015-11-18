@@ -5,6 +5,9 @@ body {
 h1, h2 {
 	font-family: sans-serif;
 }
+.new-room {
+	margin-top: 40px;
+}
 
 #container {
 	position: relative;

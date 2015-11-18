@@ -124,6 +124,14 @@ Template.cubeList.helpers({
   }
 });
 
+Template.cubeList.events({
+    'click button': function (event, instance){
+      event.preventDefault();
+      var name = instance.$('input').val() || "(no name)"
+      Cubes.insert( {name:name, moves:[], createdAt: new Date()});
+    }
+});
+
 Template.cubeList.onCreated(function(){
   var self = this;
   self.autorun(function () {
