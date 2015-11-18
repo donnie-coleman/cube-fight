@@ -24,6 +24,19 @@ function XOR(a, b){
   return (a || b) && !(a && b);
 }
 
+function randomizeCube(number){
+  number = (number && !isNaN(number) && number > 0) ? number : 20;
+  var MAX_MOVES = 9;
+  var MAX_DIRECTIONS = 2;
+  var randomMoves = [];
+
+  for(var i = 0; i < number; i++) {
+    randomMoves.push(getMovesList()[Math.floor(Math.random()*MAX_MOVES)]+''+getDirectionsList()[Math.floor(Math.random()*MAX_DIRECTIONS)]);
+  }
+  return randomMoves;
+}
+
+
 Template.moves.helpers({
   movesList: function () {
     return getMovesList();
@@ -128,7 +141,7 @@ Template.cubeList.events({
     'click button': function (event, instance){
       event.preventDefault();
       var name = instance.$('input').val() || "(no name)"
-      Cubes.insert( {name:name, moves:[], createdAt: new Date()});
+      Cubes.insert( {name:name, moves:randomizeCube(), createdAt: new Date()});
     }
 });
 
