@@ -4,26 +4,25 @@ Meteor.startup(function () {
 	Cubes.insert({
 	  name: "Cube A",
 	  createdAt: new Date(),
-	  moves: ['LMR']
+	  moves: []
 	});
 
 	Cubes.insert({
 	  name: "Cube B",
 	  createdAt: new Date(),
-	  moves: ['CML']
+	  moves: []
 	});
 
 	Cubes.insert({
 	  name: "Cube C",
 	  createdAt: new Date(),
-	  moves: ['RMR']
+	  moves: []
 	});
 });
 
 Meteor.publish('cubes', function(id) {
 	if(!id){
-		Meteor._sleepForMs(2000);
-		return Cubes.find(); //TODO: sort by something
+		return Cubes.find(); //TODO: sort by something, filter out everything but names
 	}
 	else {
 		return Cubes.find({_id:id});
