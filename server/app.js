@@ -22,7 +22,7 @@ Meteor.startup(function () {
 
 Meteor.publish('cubes', function(id) {
 	if(!id){
-		return Cubes.find(); //TODO: sort by something, filter out everything but names
+		return Cubes.find({}, {fields:{name: 1}, sort: {name: 1}});
 	}
 	else {
 		return Cubes.find({_id:id});
