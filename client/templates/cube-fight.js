@@ -1,18 +1,13 @@
 function getMovesList(){
-  return ["LM",
-          "CM",
-          "RM",
-          "FS",
-          "CS",
-          "BS",
-          "UE",
-          "CE",
-          "DE"];
+  return ["LM","CM","RM","FS","CS","BS","UE","CE","DE",
+          "YZ","XY","ZX"];
 }
 function getDirectionsList() {
+
   return ['L','R'];
 }
 function getMoves() {
+
   return Cubes.findOne().moves || [];
 }
 function parseMove(move, undo){
@@ -21,6 +16,7 @@ function parseMove(move, undo){
   return {face: move[0], slice: move[1], rotate: (XOR(rot, undo) ? 'right' : 'left')};
 }
 function XOR(a, b) {
+
   return (a || b) && !(a && b);
 }
 function invokeSequence(cube, queue) {
