@@ -12,14 +12,14 @@ function getMoves() {
 }
 function parseMove(move, undo){
   move = move.split('');
-  var rot = (move[2] == "R" ? true : false);
+  var rot = (move[2] == "R");
   return {face: move[0], slice: move[1], rotate: (XOR(rot, undo) ? 'right' : 'left')};
 }
 function XOR(a, b) {
 
   return (a || b) && !(a && b);
 }
-function invokeSequence(cube, queue) {
+function invokeSequence(cube) {
   var intervalId = setInterval(function(){
     cube._expectingTransition = true;
     if(!cube._redoMove())
@@ -58,7 +58,7 @@ Template.moves.events({
 Template.controls.events({
   'click .reset': function (event){
     event.preventDefault();
-    getMoves().map(function(move){
+    getMoves().map(function(){
       Cubes.update( {_id:Session.get("cubeId")}, {$set: { moves: [] }});
     });
   }
@@ -75,11 +75,9 @@ Template.cube.helpers({
   cubies: function(){
      //don't trigger a re-render the entire set of cubies on a cube change; js will do that for us
      return Tracker.nonreactive(function() {
-      var c = [];
-
       var initialState = Cubes.findOne().initialState || CubeFight.cubies;
 
-      c = initialState.map(function(face){
+      var c = initialState.map(function(face){
         return {faceName: face[0], className: face[1], color: face[2]};
       });
 
@@ -91,7 +89,7 @@ Template.cube.helpers({
 });
 
 /** CUBE REACTORS **/
-Tracker.autorun(function (c) {
+Tracker.autorun(function () {
     var _cubeId = FlowRouter.getParam('cubeId');
 
     if (!Session.get('cubeId') || //must be in A cube room
@@ -109,7 +107,7 @@ Tracker.autorun(function (c) {
       //don't rotate the cube if we've set its initial state already
       if(_cube && !_cube.initialState) {
           queue = new Y.Queue();
-          for(move of getMoves()){
+          for(var move of getMoves()){
             queue.add(parseMove(move, true));
           }
           queue.current = -1;
@@ -119,7 +117,9 @@ Tracker.autorun(function (c) {
       // cube._disabledFLick = true;
       cube.run(); //run the cube
 
-      invokeSequence(cube, queue); // move the cube
+      if(queue) {
+          invokeSequence(cube); // move the cube
+      }
 
       Session.set('cube_initialized', true);
     });
@@ -147,7 +147,7 @@ Cubes.find().observeChanges({
     //export current cube configuration to mongo
     jQuery('#cube').one('transitionend', function(){
       var list = [];
-      jQuery("#cube > div.cubie").each(function(idx, cube){
+      jQuery("#cube").children("div.cubie").each(function(idx, cube){
           list.push([ jQuery(cube).find('span').text(), cube.className, jQuery(cube).find('div')[0].className]);
       });
       Cubes.update({_id:Session.get("cubeId")}, {$set: { initialState: list }});
@@ -163,7 +163,7 @@ Template.room.onCreated(function(){
     Session.set('cubeId', null);
 
     self.autorun(function() {
-      var subscription = self.subscribe('cubes', cubeId);
+      self.subscribe('cubes', cubeId);
       Session.set('cubeId', cubeId);
     });
 });
