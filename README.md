@@ -4,7 +4,7 @@ To run,
 
 first clone the html5rubiks cube submodule:
 
-`git submodule init`
+`git submodule init`  
 `git submodule update`
 
 then go to the command line and type:
