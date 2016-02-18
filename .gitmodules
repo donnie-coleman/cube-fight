@@ -1,3 +1,3 @@
 [submodule "client/libs/html5rubiks"]
 	path = client/libs/html5rubiks
-	url = git@github.com:donnietron/html5rubik.git
+	url = https://github.com/donnietron/html5rubik.git
